@@ -1,69 +1,96 @@
 # Arch Setup
 
 > [!WARNING]
-> This is a advance guide usning some core system alternitives. Only follow if you know what your doing!!!
+> This is an advanced guide using some core system alternatives. Only follow if you know what you're doing!!!
 
-This guide is for UEFI systems
+This guide is for UEFI systems.
 
 ## Change keyboard layout
 
-To list available options(): 
-`localectl list-keymaps`
+To list available options: 
+```
+localectl list-keymaps
+```
 
-For exsample you chane launguage to Italian you can do:
-`loadkeys it`
+For example, to change the keyboard layout to Italian, you can do:
 
-## Connect to wifi
+```
+loadkeys it
+```
 
-Heres some basic commands to connect to wifi:
+## Connect to WiFi
 
-`iwctl`
-`device list`
-`device name set-property Powered on`
-`station name scan`
-`station name get-networks`
-`station name connect SSID`
+Heres some basic commands to connect to WiFi. Replace `name` with your device name -Typically `wlan0`- and `SSID` with the name of the network you want to connect. If the network name has spaces in it, you'll have to wrap it inside of quotation marks (E.g. `WiFi`, "My Network"`).
 
-To test if your connected to wifi:
+```
+iwctl
+```
+```
+device list
+device name set-property Powered on
+station name scan
+station name get-networks
+station name connect SSID
+```
 
-`ping archlinux.org`
+To test if you're connected to the Internet:
 
-## Partition System
+```
+ping archlinux.org
+```
 
-`cfdisk`
+## Partitioning
 
-If you see a screen to select patition type select the gpt option
-Next, You'll see a screen with partions on it and if you have multiple partitions you can delete them if you have backed up the data on them
-Then go to the new tab and enter in how much you need for a boot partition and in this case it will be **200M**
-After create a partition thats **4G** and that will be used for a swap partition (you can make this bigger if you would like)
-Finally, create a partition that will use the rest of the space you have and hit write and type `yes` when your finish with everything
+```
+cfdisk
+```
 
-## Format Partions
+If you see a screen to select patition type. Select the `gpt` option.
 
-To list the partions you have made type:
+Next, you'll see a screen with partitions on it and, if you have multiple partitions, you can delete them if you have backed up the data on them.
 
-`lsblk`
+Then, go to the `New` tab and type in how much you need for a boot partition. In this case, it will be **200M**.
 
-With the root partitons format the partition to btrfs (biggest partition):
+After that, create a partition that's **4G**. That one will be used as a swap partition. You can make this bigger if you would like.
 
-`mkfs.btrfs /dev/<drive and partition>` 
+Finally, create a partition that will use the rest of the space you have and hit `Write` and type `yes` when you're finished with everything.
 
-Next format the boot partition (usally smallest partition):
+## Format Partitions
 
-`mkfs.fat -F 32 /dev/<drive and partition>`
+To list the partions, you have to type:
+
+```
+lsblk
+```
+
+Format the root partition (the biggest partition) to `btrfs`:
+
+```
+mkfs.btrfs /dev/<drive and partition>
+```
+
+Next, format the boot partition (usally the smallest partition):
+
+```
+mkfs.fat -F 32 /dev/<drive and partition>
+```
 
 ## Mount partitions
 
-First mount root partition:
+First, mount the root partition:
 
-`mount /dev/<drive and partition> /mnt`
+```
+mount /dev/<drive and partition> /mnt
+```
 
-Now we need to mount the boot partition but the `/boot/EFI` is not a directory by default so we will create that first
+Now, we need to mount the boot partition but the `/boot/efi` is not a directory by default so we will create that first
 
-`mkdir -p /mnt/boot/EFI`
-`mount /dev/<drive and partition> /mnt/boot/EFI`
+```
+mkdir -p /mnt/boot/efi
+mount /dev/<drive and partition> /mnt/boot/efi
+```
 
-To check if you got everything right run and verify:
+To check if you got everything right, run and verify:
 
 `lsblk`
 
@@ -73,15 +100,21 @@ Comming soon!
 
 ## Install base system
 
-`pacstrap /mnt base booster linux linux-lts linux-firmware base-devel btrfs-progs limine helix networkmanager`
+```
+pacstrap /mnt base booster linux linux-lts linux-firmware base-devel btrfs-progs limine helix networkmanager
+```
 
 ## Fstab
 
-`genfstab /mnt > /mnt/etc/fstab`
+```
+genfstab /mnt > /mnt/etc/fstab
+```
 
 ## Chroot
 
-`arch-chroot /mnt`
+```
+arch-chroot /mnt
+```
 
 ## Booster
 
@@ -91,83 +124,118 @@ compress: zstd -9 -T0
 modules: btrfs
 strip: true
 ```
-If your using the btrfs filesystem you need the `btrfs` module
-If you have a Intel gpu you dont need a gpu module.
-If you have a Amd gpu you need to have the `amdgpu` module.
-If you have a Nvidia you need these modules `nvidia,nvidia_modeset,nvidia_uvm,nvidia_drm`
+
+If you're using the btrfs filesystem, you need the `btrfs` module
+If you have an Intel GPU, you dont need a GPU module.
+If you have an AMD GPU, you need to have the `amdgpu` module.
+If you have an Nvidia GPU, you need these modules `nvidia,nvidia_modeset,nvidia_uvm,nvidia_drm`
 
 To run booster run:
 
-`sudo /usr/lib/booster/regenerate_images`
+```
+sudo /usr/lib/booster/regenerate_images
+```
 
 ## Time zone
 
-`ln -sf /usr/share/zoneinfo/Region/City /etc/localtime`
+```
+ln -sf /usr/share/zoneinfo/Region/City /etc/localtime
+```
 
-To verify its the correct time run:
+To verify it's the correct time, run:
 
-`date`
+```
+date
+```
 
-Now we need to sync the the system clock:
+Now, we need to sync the the system clock:
 
-`hwclock --systohc`
+```
+hwclock --systohc
+```
+
+If you're dualbooting with Windows and don't want to use `RealTimeIsUniversal` registry hack, you can replace `--systohc` with `--hctosys` instead, and Arch will follow and set BIOS clock instead, just like Windows.
 
 ## Localization
 
-`helix /etc/locale.gen`
+```
+helix /etc/locale.gen
+```
 
-Now you will edit a file that contains all the available locals on the system
-In most case if you are in america you will need to uncommet the line that contains `en_US.UTF-8 UTF-8`
+Now you will edit a file that contains all the available locales on the system.
 
-Now to finish run:
+In most cases, if you are in the US, you will need to uncomment the line that contains `en_US.UTF-8`.
 
-`locale-gen`
+Now, to finish, run:
 
-Also you will need to add this `LANG=en_US.UTF-8` to this file `/etc/locale.conf` if you want to use US local
+```
+locale-gen
+```
 
-If you want to change keyboard layout (default is US) edit this file `/etc/vconsole.conf` with `KEYMAP=us`
+Also, you will need to add `LANG=en_US.UTF-8` to `/etc/locale.conf` if you want to use US locale.
+
+If you want to change the keyboard layout (default is US), edit `/etc/vconsole.conf` with `KEYMAP=us`.
 
 ## Network hostname
 
-Now edit `/etc/hostname` with whatever hostname you would like
+Now, edit `/etc/hostname` with whatever hostname you would like.
 
 ## Create user
 
-Now create a username you would like to use
-`useradd -m -G wheel -s /bin/bash yourusername`
+Now, create a username you would like to use.
 
-Now create a password that you would like to use
+```
+useradd -mG wheel -s /bin/bash yourusername
+```
 
-`passwd yourusername`
+Now, create a password that you would like to use:
 
-To be able to use sudo we need to do the following:
+```
+passwd yourusername
+```
 
-`EDITOR=helix visudo`
+To be able to use sudo, we need to do the following:
+
+```
+EDITOR=hx visudo
+```
 
 Uncomment the following line:
-`%wheel ALL=(ALL:ALL) ALL`
 
-Finally to test seitch to your user using `su username` and then try to run a sudo command such as updating the system
+```
+%wheel ALL=(ALL:ALL) ALL
+```
 
-Optional, if you want to you can now disable the root user by running this command
+Finally, to test, switch to your user using `su username` and then try to run a `sudo` command such as updating the system.
 
-`passwd -l root`
+Optionally, if you want to, you can now disable the root user by running this command:
+
+```
+passwd -l root
+```
 
 ## Enable core services
 
-`systemctl enable networkmanager`
+```
+systemctl enable networkmanager
+```
 
 ## Boot loader
 
-`cd /boot/EFI/BOOT`
-`cp BOOTIA32.EFI /boot/EFI/BOOT`
-`cp BOOTX64.EFI /boot/EFI/BOOT`
+```
+cd /boot/EFI/BOOT
+cp BOOTIA32.EFI /boot/EFI/BOOT
+cp BOOTX64.EFI /boot/EFI/BOOT
+```
 
-How to get PARTUUID and File Type:
+How to get `PARTUUID` and File Type:
 
-`lsblk -o NAME,MOUNTPOINT,FSTYPE,UUID,PARTUUID /dev/<disk>`
+```
+lsblk -o NAME,MOUNTPOINT,FSTYPE,UUID,PARTUUID /dev/<disk>
+```
 
-Please add this to the limine.conf file and if its not there create it:
+Please add this to the `limine.conf` file and, if its not there, create it:
+
 ```
 TIMEOUT=5
 
@@ -184,48 +252,59 @@ TIMEOUT=5
     module_path: boot():/booster-linux-lts.img
 
 ```
-If you have zram enabled add this to the kernel_cmdline:
 
-`zswap.enabled=0`
+If you have zram enabled, add this to the kernel_cmdline:
+
+```
+zswap.enabled=0
+```
 
 ## Microcode
 
-Install your microcode for whatever cpu brand your using
+Install your microcode for whatever CPU brand you're using:
 
 `intel-ucode` or `amd-ucode`
 
 ## Reboot
 
-Now you can reboot but before we do we need to unmount the drive and we can do that by:
+Now, you can reboot, but before we do, we need to unmount the drive and we can do that by:
 
-`umount -a`
+```
+umount -a
+```
 
-To reboot just run the `reboot command`
+To reboot, just run the `reboot` command.
 
 ## Connect to the internet
 
-Use command `nmtui` to connect to the internet if your using wifi
+Use command `nmtui` to connect to the internet if you're using WiFi.
 
 ## AUR wrapper
 
-To install a AUR wrapper we first need to install `git` and then we can install the aur wrapper of our choosing but in our case we will use `yay`
+To install an AUR wrapper, we first need to install `git`, and then we can install the aur wrapper of our choosing. In our case, we will use `yay`.
 
-`sudo pacman -S git`
-`git clone https://aur.archlinux.org/yay-bin.git`
-`cd yay-bin`
-`makepkg -si`
+```
+sudo pacman -S git
+git clone https://aur.archlinux.org/yay-bin.git
+cd yay-bin
+makepkg -si
+```
 
 ## Helix
 
-Now would be nice to install a package to now have to type `helix` each time you want to run the text edit but instead you can now run `hx`.
+Now, it would be nice to install a package to be able to invoke `helix` each time you want to run the text edit, but instead you can now run `hx`.
 
-`yay -S helix helixbinhx`
+```
+yay -S helix helixbinhx
+```
 
-And if you want systex highlighting for more programming launguages you can install all or some of these packages
+And, if you want syntax highlighting for more programming launguages, you can install all or some of these packages:
 
 Optional Dependencies:
+```
 bash-language-server clang dart elvish gopls haskell-language-server julia lua-language-server marksman python-lsp-server r racket rust-analyzer taplo texlab typescript-language-server typst-lsp vue-language-server vscode-css-languageserver vscode-html-languageserver vscode-json-languageserver yaml-language-server zls
-
+```
+```
 ansible-language-server: for Ansible language support
 bash-language-server: for Bash language support
 clang: for C/C++ language support
@@ -250,29 +329,27 @@ vscode-html-languageserver: for HTML language support
 vscode-json-languageserver: for JSON language support
 yaml-language-server: for YAML language support
 zls: for Zig language support
+```
 
 ## Add audio services
 
-Some core pipewire packages are:
-
-`yay -S pipewire pipewire-jack pipewire-audio pipewire-pulse pipewire-alsa wireplumber`
-
-To have bluetooth support you will need:
-
-`yay -S bluez bluez-utils`
-
-To enable/start audio and bluetooth support run the following:
+Some core PipeWire packages are:
 
 ```
-sudo systemctl enable bluetooth.service
-sudo systemctl start bluetooth.service
-systemctl --user enable pipewire.service
-systemctl --user enable pipewire-pulse.service
-systemctl --user enable wireplumber.service
-systemctl --user start pipewire.service
-systemctl --user start pipewire-pulse.service
-systemctl --user start wireplumber.service
+yay -S pipewire pipewire-jack pipewire-audio pipewire-pulse pipewire-alsa wireplumber
+```
 
+To have Bluetooth support, you will need:
+
+```
+yay -S bluez bluez-utils
+```
+
+To enable/start audio and Bluetooth support, run the following:
+
+```
+sudo systemctl enable bluetooth.service --now
+systemctl --user enable pipewire.service pipewire-pulse.service wireplumber.service --now
 ```
 
 ## Set up snapshots
@@ -287,4 +364,6 @@ Comming soon!
 
 Comming soon!
 
-Concrats you have set up your base system and can now install your prefered Window Manager or Desktop Manager of your choice!
+-----
+
+Congrats! You have set up your base system, and can now install your preferred Window Manager or Desktop Manager of your choice!
