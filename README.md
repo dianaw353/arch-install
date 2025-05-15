@@ -96,10 +96,6 @@ To check if you got everything right, run and verify:
 
 ## Create btrfs sub volumes
 
-First we need to mount to the root partition and you can do that by:
-
-`mount /dev/<drive and partition> /mnt`
-
 Now to create sub partions run the following:
 
 ```
@@ -118,12 +114,16 @@ Next, we need to create the mounting points:
 
 `mkdir -p /mnt/{boot,home,.snapshots,var/log}`
 
-Finally, we can mount the sub volumes
+Next, we can mount the sub volumes
 ```
 mount -o noatime,compress=zstd,subvol=@home /dev/<drive and partition> /mnt/home
 mount -o noatime,compress=zstd,subvol=@snapshots /dev/<drive and partition> /mnt/.snapshots
 mount -o noatime,compress=zstd,subvol=@var_log /dev/<drive and partition> /mnt/var/log
 ```
+
+Finally, lets mount the boot partition
+
+`mount /dev/<drive and partition> /mnt/boot`
 
 ## Install base system
 
