@@ -389,8 +389,19 @@ Comming soon!
 
 ## Install and configure Zram
 
-Comming soon!
+Install zram:
 
+`sudo pacman -Syu zram-generator`
+
+Initalize zram (default size is half of your ram):
+
+`sudo systemctl enable --now zramd.service`
+
+If you have zram enabled, add this to the `kernel_cmdline` in `/boot/limine.conf`:
+
+```
+zswap.enabled=0
+```
 -----
 
 Congrats! You have set up your base system, and can now install your preferred Window Manager or Desktop Manager of your choice!
