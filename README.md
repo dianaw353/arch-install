@@ -125,6 +125,32 @@ Finally, lets mount the boot partition
 
 `mount /dev/<drive and partition> /mnt/boot`
 
+## Edit pacman.conf and update mirrorlist
+
+First, we need a text editor so we will use `helix`
+
+`pacman -S helix`
+
+Now to edit `pacman.conf`
+
+`helix /etc/pacman.conf`
+
+Uncommet the line with `Color` and `ParallelDownloads = 5` and save
+
+Now to update the mirrorlist we need to get a package called `reflector` to generate a fresh mirror list and to generate the mirrorlist.
+
+```
+pacman -Sy reflector
+reflector --latest 10 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
+```
+
+Finally, we need to copy the configuration to the installed system and we can do that by:
+
+```
+cp /etc/pacman.conf /mnt/etc/pacman.conf
+cp /etc/pacman.d/mirrorlist /mnt/etc/pacman.d/mirrorlist
+```
+
 ## Install base system
 
 ```
