@@ -94,9 +94,36 @@ To check if you got everything right, run and verify:
 
 `lsblk`
 
-## Create btrfs sub partitions
+## Create btrfs sub volumes
 
-Comming soon!
+First we need to mount to the root partition and you can do that by:
+
+`mount /dev/<drive and partition> /mnt`
+
+Now to create sub partions run the following:
+
+```
+btrfs subvolume create /mnt/@
+btrfs subvolume create /mnt/@home
+btrfs subvolume create /mnt/@snapshots
+btrfs subvolume create /mnt/@var_log
+umount /mnt
+```
+
+Next, we need to mount the root directory
+
+`mount -o noatime,compress=zstd,subvol=@ /dev/<drive and partition> /mnt`
+
+Next, we need to create the mounting points:
+
+`mkdir -p /mnt/{boot,home,.snapshots,var/log}`
+
+Finally, we can mount the sub volumes
+```
+mount -o noatime,compress=zstd,subvol=@home /dev/<drive and partition> /mnt/home
+mount -o noatime,compress=zstd,subvol=@snapshots /dev/<drive and partition> /mnt/.snapshots
+mount -o noatime,compress=zstd,subvol=@var_log /dev/<drive and partition> /mnt/var/log
+```
 
 ## Install base system
 
