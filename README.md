@@ -7,7 +7,7 @@ This guide is for UEFI systems.
 
 ## Change keyboard layout
 
-To list available options: 
+To list available options:
 ```
 localectl list-keymaps
 ```
@@ -101,7 +101,6 @@ Now to create sub partions run the following:
 ```
 btrfs subvolume create /mnt/@
 btrfs subvolume create /mnt/@home
-btrfs subvolume create /mnt/@snapshots
 btrfs subvolume create /mnt/@var_log
 umount /mnt
 ```
@@ -112,12 +111,11 @@ Next, we need to mount the root directory
 
 Next, we need to create the mounting points:
 
-`mkdir -p /mnt/{boot,home,.snapshots,var/log}`
+`mkdir -p /mnt/{boot,home,var/log}`
 
 Next, we can mount the sub volumes
 ```
 mount -o noatime,compress=zstd,subvol=@home /dev/<drive and partition> /mnt/home
-mount -o noatime,compress=zstd,subvol=@snapshots /dev/<drive and partition> /mnt/.snapshots
 mount -o noatime,compress=zstd,subvol=@var_log /dev/<drive and partition> /mnt/var/log
 ```
 
@@ -275,10 +273,18 @@ systemctl enable networkmanager
 
 ## Boot loader
 
+UEFI systems
+
 ```
-cd /boot/EFI/BOOT
-cp BOOTIA32.EFI /boot/EFI/BOOT
-cp BOOTX64.EFI /boot/EFI/BOOT
+mkdir -p /boot/EFI/BOOT
+cp /usr/share/limine/BOOTIA32.EFI /boot/EFI/BOOT
+cp /usr/share/limine/BOOTX64.EFI /boot/EFI/BOOT
+```
+BIOS systems
+
+```
+mkdir -p /boot/limine
+cp /usr/share/limine/limine-bios.sys /boot/limine/
 ```
 
 How to get `PARTUUID` and File Type:
@@ -293,16 +299,11 @@ Please add this to the `limine.conf` file and, if its not there, create it:
 TIMEOUT=5
 
 /Arch Linux (linux) - Booster
-    protocol: linux
-    kernel_path: boot():/vmlinuz-linux
-    kernel_cmdline: root=PARTUUID=<PARTUUID> rootflags=subvol=@ rw rootfstype=<filetype> quiet
-    module_path: boot():/booster-linux.img
-
-/Arch Linux (linux-lts) - Booster
-    protocol: linux
-    kernel_path: boot():/vmlinuz-linux-lts
-    kernel_cmdline: root=PARTUUID=<PARTUUID> rootflags=subvol=@ rw rootfstype=<filetype> quiet
-    module_path: boot():/booster-linux-lts.img
+  protocol: linux
+  kernel_path: boot():/vmlinuz-linux
+  kernel_cmdline: root=PARTUUID=<PARTUUID> rootflags=subvol=@ rw rootfstype=<filetype> quiet
+  module_path: boot():/<brand>-ucode.img
+  module_path: boot():/booster-linux.img
 
 ```
 
@@ -417,13 +418,13 @@ Comming soon!
 
 Install zram:
 
-`sudo pacman -Syu zram-generator`
+`sudo pacman -S zram-generator`
 
 Initalize zram (default size is half of your ram):
 
 `sudo systemctl enable --now zramd.service`
 
-If you have zram enabled, add this to the `kernel_cmdline` in `/boot/limine.conf`:
+If you have zsam enabled, add this to the `kernel_cmdline` in `/boot/limine.conf`:
 
 ```
 zswap.enabled=0
