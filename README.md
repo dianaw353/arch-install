@@ -406,13 +406,24 @@ sudo systemctl enable bluetooth.service --now
 systemctl --user enable pipewire.service pipewire-pulse.service wireplumber.service --now
 ```
 
-## Set up snapshots
-
-Comming soon!
-
 ## Limine shapshots setup
 
-Comming soon!
+https://gitlab.com/Zesko/limine-snapper-sync
+
+Install these packages:
+
+`yay -S limine-entry-tool limine-snapper-sync snap-pac`
+
+Check if an ESP path is detected by running: `bootctl --print-esp-path`:
+If detected, no further configuration for `ESP_PATH` is needed.
+If not detected, create and edit `/etc/default/limine` and set `ESP_PATH=` to the correct ESP path.
+Then run `limine-update` to confirm it worked.
+
+To enable automatic syncing:
+
+`systemctl enable --now limine-snapper-sync.service`
+
+https://gitlab.com/Zesko/limine-snapper-sync#tool-configuration
 
 ## Install and configure Zram
 
