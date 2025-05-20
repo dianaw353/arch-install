@@ -1,5 +1,7 @@
 # Wluma
 
+Wluma is a tool for Wayland compositors to automatically adjust screen brightness based on the screen contents and amount of ambient light around you
+
 `yay -S wluma`
 
 Copy this file to the following location:
@@ -8,6 +10,8 @@ Copy this file to the following location:
 mkdir ~/.config/wluma
 cp config.toml ~/.config/wluma
 ```
+
+If needed edit the backlight name and path in `~/.config/wluma/config.toml`
 
 On hyprland add this line to ~/.config/hypr/hyprland.conf:
 
@@ -28,6 +32,8 @@ See if your user is in `video` group:
 If not, add yourself:
 
 `sudo usermod -aG video $USER`
+
+
 
 
 
