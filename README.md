@@ -259,6 +259,10 @@ Uncomment the following line:
 
 Finally, to test, switch to your user using `su username` and then try to run a `sudo` command such as updating the system.
 
+Some apps may need you to be apart of the `video` and `input` group so just runn the following command:
+
+`sudo usermod -aG input,video $USER`
+
 Optionally, if you want to, you can now disable the root user by running this command:
 
 ```
