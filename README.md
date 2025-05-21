@@ -92,11 +92,13 @@ mount /dev/<drive and partition> /mnt/boot/efi
 
 To check if you got everything right, run and verify:
 
-`lsblk`
+```
+lsblk
+```
 
 ## Create btrfs sub volumes
 
-Now to create sub partions run the following:
+Now, to create subpartitions run the following:
 
 ```
 btrfs subvolume create /mnt/@
@@ -105,37 +107,48 @@ btrfs subvolume create /mnt/@var_log
 umount /mnt
 ```
 
-Next, we need to mount the root directory
+Next, we need to mount the root directory:
 
-`mount -o noatime,compress=zstd,subvol=@ /dev/<drive and partition> /mnt`
+```
+mount -o noatime,compress=zstd,subvol=@ /dev/<drive and partition> /mnt
+```
 
 Next, we need to create the mounting points:
 
-`mkdir -p /mnt/{boot,home,var/log}`
+```
+mkdir -p /mnt/{boot,home,var/log}
+```
 
-Next, we can mount the sub volumes
+Next, we can mount the sub volumes:
+
 ```
 mount -o noatime,compress=zstd,subvol=@home /dev/<drive and partition> /mnt/home
 mount -o noatime,compress=zstd,subvol=@var_log /dev/<drive and partition> /mnt/var/log
 ```
 
-Finally, lets mount the boot partition
+Finally, lets mount the boot partition:
 
-`mount /dev/<drive and partition> /mnt/boot`
+```
+mount /dev/<drive and partition> /mnt/boot
+```
 
 ## Edit pacman.conf and update mirrorlist
 
-First, we need a text editor so we will use `helix`
+First, we need a text editor so we will use `helix`.
 
-`pacman -S helix`
+```
+pacman -S helix
+```
 
 Now to edit `pacman.conf`
 
-`helix /etc/pacman.conf`
+```
+helix /etc/pacman.conf
+```
 
-Uncommet the line with `Color` and `ParallelDownloads = 5` and save
+Uncomment the line with `Color` and `ParallelDownloads = 5` and save.
 
-Now to update the mirrorlist we need to get a package called `reflector` to generate a fresh mirror list and to generate the mirrorlist.
+Now, to update the mirrorlist, we need to get a package called `reflector` to generate a fresh mirror list and to generate the mirrorlist.
 
 ```
 pacman -Sy reflector
@@ -261,7 +274,9 @@ Finally, to test, switch to your user using `su username` and then try to run a 
 
 Some apps may need you to be apart of the `video` and `input` group so just runn the following command:
 
-`sudo usermod -aG input,video $USER`
+```
+sudo usermod -aG input,video $USER
+```
 
 Optionally, if you want to, you can now disable the root user by running this command:
 
@@ -277,21 +292,22 @@ systemctl enable networkmanager
 
 ## Boot loader
 
-UEFI systems
+UEFI systems:
 
 ```
 mkdir -p /boot/EFI/BOOT
 cp /usr/share/limine/BOOTIA32.EFI /boot/EFI/BOOT
 cp /usr/share/limine/BOOTX64.EFI /boot/EFI/BOOT
 ```
-BIOS systems
+
+BIOS systems:
 
 ```
 mkdir -p /boot/limine
 cp /usr/share/limine/limine-bios.sys /boot/limine/
 ```
 
-How to get `PARTUUID` and File Type:
+Getting `PARTUUID` and File Type:
 
 ```
 lsblk -o NAME,MOUNTPOINT,FSTYPE,UUID,PARTUUID /dev/<disk>
@@ -416,7 +432,9 @@ https://gitlab.com/Zesko/limine-snapper-sync
 
 Install these packages:
 
-`yay -S limine-entry-tool limine-snapper-sync snap-pac`
+```
+yay -S limine-entry-tool limine-snapper-sync snap-pac
+```
 
 Check if an ESP path is detected by running: `bootctl --print-esp-path`:
 If detected, no further configuration for `ESP_PATH` is needed.
@@ -425,25 +443,32 @@ Then run `limine-update` to confirm it worked.
 
 To enable automatic syncing:
 
-`systemctl enable --now limine-snapper-sync.service`
+```
+systemctl enable --now limine-snapper-sync.service
+```
 
-https://gitlab.com/Zesko/limine-snapper-sync#tool-configuration
+Further reading: https://gitlab.com/Zesko/limine-snapper-sync#tool-configuration
 
 ## Install and configure Zram
 
 Install zram:
 
-`sudo pacman -S zram-generator`
+```
+sudo pacman -S zram-generator
+```
 
 Initalize zram (default size is half of your ram):
 
-`sudo systemctl enable --now zramd.service`
+```
+sudo systemctl enable --now zramd.service
+```
 
-If you have zsam enabled, add this to the `kernel_cmdline` in `/boot/limine.conf`:
+If you have zswap enabled, add this to the `kernel_cmdline` in `/boot/limine.conf`:
 
 ```
 zswap.enabled=0
 ```
+
 -----
 
 Congrats! You have set up your base system, and can now install your preferred Window Manager or Desktop Manager of your choice!
