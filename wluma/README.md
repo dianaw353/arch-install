@@ -18,7 +18,7 @@ If needed, edit the backlight name and path in `~/.config/wluma/config.toml`
 On hyprland add this line to ~/.config/hypr/hyprland.conf:
 
 ```
-exec = wluma
+exec-once = wluma
 ```
 
 Add this to the following file `/etc/udev/rules.d/90-wluma-backlight.rules`:
