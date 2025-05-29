@@ -290,6 +290,12 @@ passwd -l root
 systemctl enable networkmanager
 ```
 
+## Microcode
+
+Install your microcode for whatever CPU brand you're using:
+
+`intel-ucode` or `amd-ucode`
+
 ## Boot loader
 
 UEFI systems:
@@ -307,13 +313,13 @@ mkdir -p /boot/limine
 cp /usr/share/limine/limine-bios.sys /boot/limine/
 ```
 
-Getting `PARTUUID` and File Type:
+Getting `PARTUUID` and File Type and add it to `/boot/limine.conf`:
 
 ```
-lsblk -o NAME,MOUNTPOINT,FSTYPE,UUID,PARTUUID /dev/<disk>
+lsblk -o FSTYPE,PARTUUID -nr /dev/<disk> | sudo tee /boot/limine.conf > /dev/null
 ```
 
-Please add this to the `limine.conf` file and, if its not there, create it:
+Please add this to the `limine.conf` file and, if its not there, create it and move the `PARTUUID` to the required spot:
 
 ```
 TIMEOUT=5
@@ -327,17 +333,11 @@ TIMEOUT=5
 
 ```
 
-If you have zram enabled, add this to the kernel_cmdline:
+If you have zswap enabled, add this to the kernel_cmdline:
 
 ```
 zswap.enabled=0
 ```
-
-## Microcode
-
-Install your microcode for whatever CPU brand you're using:
-
-`intel-ucode` or `amd-ucode`
 
 ## Reboot
 
@@ -372,38 +372,7 @@ Now, it would be nice to install a package to be able to invoke `helix` each tim
 yay -S helix helixbinhx
 ```
 
-And, if you want syntax highlighting for more programming launguages, you can install all or some of these packages:
-
-Optional Dependencies:
-```
-bash-language-server clang dart elvish gopls haskell-language-server julia lua-language-server marksman python-lsp-server r racket rust-analyzer taplo texlab typescript-language-server typst-lsp vue-language-server vscode-css-languageserver vscode-html-languageserver vscode-json-languageserver yaml-language-server zls
-```
-```
-ansible-language-server: for Ansible language support
-bash-language-server: for Bash language support
-clang: for C/C++ language support
-dart: for Dart language support
-elvish: for elvish language support
-gopls: for Go language support
-haskell-language-server: for Haskell language support
-julia: for Julia language support
-lua-language-server: for Lua language support
-marksman: for Marksman language support
-python-lsp-server: for Python language support
-r: for R and rmarkdown language support
-racket: for racket language support
-rust-analyzer: for Rust language support
-taplo: for TOML language support
-texlab: for LaTeX language support
-typescript-language-server: for jsx, tsx, typescript language support
-typst-lsp: for Typst language support
-vue-language-server: for Vue language support
-vscode-css-languageserver: for CSS and SCSS support
-vscode-html-languageserver: for HTML language support
-vscode-json-languageserver: for JSON language support
-yaml-language-server: for YAML language support
-zls: for Zig language support
-```
+To view the opitional dependencies for helix syntax highlighting for x launguages run `hx --health` to view what packages you need for x launguage
 
 ## Add audio services
 
@@ -461,12 +430,6 @@ Initalize zram (default size is half of your ram):
 
 ```
 sudo systemctl enable --now zramd.service
-```
-
-If you have zswap enabled, add this to the `kernel_cmdline` in `/boot/limine.conf`:
-
-```
-zswap.enabled=0
 ```
 
 -----
