@@ -439,11 +439,19 @@ Install zram:
 sudo pacman -S zram-generator
 ```
 
-Initalize zram (default size is half of your ram):
+Create file `/etc/systemd/zram-generator.conf` with contents:
 
 ```
-sudo systemctl enable --now zramd.service
+[zram0]
+zram-size = ram / 2
+compression-algorithm = zstd
+swap-priority = 100
+fs-type = swap
 ```
+
+Now reboot to see the effects!
+
+to confirm that they have applied you can run `swapon` or `zramctl`
 
 -----
 
