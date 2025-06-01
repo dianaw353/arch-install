@@ -431,6 +431,15 @@ sudo systemctl enable --now snapper-cleanup.timer
 
 Further reading: https://gitlab.com/Zesko/limine-snapper-sync#tool-configuration
 
+## Install Firmware updates (optional)
+
+For devices (such as the Framework Laptops) that support `fwupd` you can update your system by installing that package and run the following:
+
+```
+fwupdmgr get-updates
+fwupdmgr update
+```
+
 ## Install and configure Zram
 
 Install zram:
