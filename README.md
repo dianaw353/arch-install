@@ -433,7 +433,7 @@ Further reading: https://gitlab.com/Zesko/limine-snapper-sync#tool-configuration
 
 ## Install Firmware updates (optional)
 
-For devices (such as the Framework Laptops) that support `fwupd` you can update your system by installing that package and run the following:
+For devices that support `fwupd` you can update your system (click [here](https://fwupd.org/lvfs/devices/) if uncertain) by installing that package and run the following:
 
 ```
 fwupdmgr refresh --force
