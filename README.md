@@ -249,7 +249,7 @@ Now, edit `/etc/hostname` with whatever hostname you would like.
 Now, create a username you would like to use.
 
 ```
-useradd -mG wheel -s /bin/bash yourusername
+useradd -mG wheel,input,video -s /bin/bash yourusername
 ```
 
 Now, create a password that you would like to use:
@@ -272,11 +272,6 @@ Uncomment the following line:
 
 Finally, to test, switch to your user using `su username` and then try to run a `sudo` command such as updating the system.
 
-Some apps may need you to be apart of the `video` and `input` group so just runn the following command:
-
-```
-sudo usermod -aG input,video $USER
-```
 
 Optionally, if you want to, you can now disable the root user by running this command:
 
