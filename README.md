@@ -426,6 +426,7 @@ To enable automatic syncing:
 
 ```
 systemctl enable --now limine-snapper-sync.service
+sudo systemctl enable --now snapper-cleanup.timer
 ```
 
 Further reading: https://gitlab.com/Zesko/limine-snapper-sync#tool-configuration
