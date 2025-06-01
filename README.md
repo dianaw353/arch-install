@@ -49,7 +49,7 @@ If you see a screen to select patition type. Select the `gpt` option.
 
 Next, you'll see a screen with partitions on it and, if you have multiple partitions, you can delete them if you have backed up the data on them.
 
-Then, go to the `New` tab and type in how much you need for a boot partition. In this case, it will be **200M**.
+Then, go to the `New` tab and type in how much you need for a boot partition. In this case, it will be **512M - 2G** or greater depending on how many snapshots/kernels you want to save.
 
 After that, create a partition that's **4G**. That one will be used as a swap partition. You can make this bigger if you would like.
 
@@ -316,15 +316,21 @@ cp /usr/share/limine/limine-bios.sys /boot/limine/
 Getting `PARTUUID` and File Type and add it to `/boot/limine.conf`:
 
 ```
-lsblk -o FSTYPE,PARTUUID -nr /dev/<disk> | sudo tee /boot/limine.conf > /dev/null
+lsblk -o PARTUUID -nr /dev/<disk and pertition> | sudo tee /boot/limine.conf > /dev/null
 ```
 
 Please add this to the `limine.conf` file and, if its not there, create it and move the `PARTUUID` to the required spot:
 
 ```
-TIMEOUT=5
+TIMEOUT: 5
+default_entry: 2
+# If you want a background add this
 
-/Arch Linux (linux) - Booster
+wallpaper: boot():/wallpaper.png # wallpaper.png needs to be in /boot
+
+/+Arch Linux
+
+//Arch Linux (linux) - Booster
   protocol: linux
   kernel_path: boot():/vmlinuz-linux
   kernel_cmdline: root=PARTUUID=<PARTUUID> rootflags=subvol=@ rw rootfstype=<filetype> quiet
@@ -358,7 +364,7 @@ Use command `nmtui` to connect to the internet if you're using WiFi.
 To install an AUR wrapper, we first need to install `git`, and then we can install the aur wrapper of our choosing. In our case, we will use `yay`.
 
 ```
-sudo pacman -S git
+sudo pacman -Sy git
 git clone https://aur.archlinux.org/yay-bin.git
 cd yay-bin
 makepkg -si
@@ -392,7 +398,7 @@ To enable/start audio and Bluetooth support, run the following:
 
 ```
 sudo systemctl enable bluetooth.service --now
-systemctl --user enable pipewire.service pipewire-pulse.service wireplumber.service --now
+systemctl --user enable pipewire.service wireplumber.service --now
 ```
 
 ## Limine shapshots setup
@@ -409,6 +415,12 @@ Check if an ESP path is detected by running: `bootctl --print-esp-path`:
 If detected, no further configuration for `ESP_PATH` is needed.
 If not detected, create and edit `/etc/default/limine` and set `ESP_PATH=` to the correct ESP path.
 Then run `limine-update` to confirm it worked.
+
+To initialize snapper for limine run:
+
+```
+sudo limine-snapper-sync
+```
 
 To enable automatic syncing:
 
