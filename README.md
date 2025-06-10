@@ -314,6 +314,11 @@ Getting `PARTUUID` and File Type and add it to `/boot/limine.conf`:
 lsblk -o PARTUUID -nr /dev/<disk and pertition> | sudo tee /boot/limine.conf > /dev/null
 ```
 
+Or you can do it automatically by running this but make sure `DISK=/dev/sdXn` is the correct drive and partion to boot off of
+```
+DISK=/dev/sdXn && PARTUUID=$(lsblk -o PARTUUID -nr "$DISK") && BRAND=$(lscpu | grep -qi amd && echo amd || echo intel) && sed "s|<PARTUUID>|$PARTUUID|g; s|<brand>|$BRAND|g" limine.conf | sudo tee /boot/limine.conf > /dev/null
+```
+
 Please add this to the `limine.conf` file and, if its not there, create it and move the `PARTUUID` to the required spot:
 
 ```
