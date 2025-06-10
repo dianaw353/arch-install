@@ -354,6 +354,12 @@ To reboot, just run the `reboot` command.
 
 Use command `nmtui` to connect to the internet if you're using WiFi.
 
+## Disable *-debug packages
+
+Most users don't need to debug a package and if thats the case edit `/etc/makepkg.conf`.
+
+Go to the line that contains `OPTIONS=` and find the word `debug` and add `!` to it
+
 ## AUR wrapper
 
 To install an AUR wrapper, we first need to install `git`, and then we can install the aur wrapper of our choosing. In our case, we will use `yay`.
