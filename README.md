@@ -3,7 +3,11 @@
 > [!WARNING]
 > This is an advanced guide using some core system alternatives. Only follow if you know what you're doing!!!
 
-This guide is for UEFI systems.
+> [!NOTE]
+> This guide is for UEFI systems.
+
+> [!NOTE]
+> This guide assumes you want to configure your system in btrfs filesystem.
 
 ## Change keyboard layout
 
