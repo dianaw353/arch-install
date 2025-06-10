@@ -265,7 +265,7 @@ passwd yourusername
 To be able to use sudo, we need to do the following:
 
 ```
-EDITOR=hx visudo
+EDITOR=helix visudo
 ```
 
 Uncomment the following line:
@@ -382,13 +382,13 @@ makepkg -si
 
 ## Helix
 
-Now, it would be nice to install a package to be able to invoke `helix` each time you want to run the text edit, but instead you can now run `hx`.
+Now, it would be nice to install a package to be able to invoke `hx`. For now, you can only invoke `helix` to get the editor up.
 
 ```
 yay -S helix helixbinhx
 ```
 
-To view the opitional dependencies for helix syntax highlighting for x launguages run `hx --health` to view what packages you need for x launguage
+To view the opitional dependencies for helix syntax highlighting for x launguages run `helix --health` or `hx --health` to view what packages you need for x launguage
 
 ## Add audio services
 
